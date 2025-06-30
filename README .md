@@ -101,19 +101,3 @@ streamlit run app.py
 
 Dataset `Fashion Product Images Dataset` by paramaggarwal (Kaggle).  
 This repository/code is licensed under MIT License. Feel free to use and modify.
-
----
-
-## ❓ Questions?
-
-Feel free to:
-- Open an issue on GitHub
-- Reach out via GitHub discussions or email
-
----
-
-Thank you for checking out this project—happy coding and styling!
-
----
-
-*Generated with 🧠 and ❤️ by your AI assistant.*
