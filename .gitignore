@@ -1,0 +1,25 @@
+# Ignore datasets
+/data/
+
+# Common image datasets
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.bmp
+*.gif
+
+# Model artifacts
+*.h5
+*.pt
+*.pth
+*.onnx
+*.tflite
+
+# Python environments
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
