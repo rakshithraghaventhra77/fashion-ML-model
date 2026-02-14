@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
-from embedding_generator import build_model, extract_embedding
-from simple_search import find_similar
+from .embedding_generator import build_model, extract_embedding
+from .simple_search import find_similar
 
 
 # Load embeddings and filenames
