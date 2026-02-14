@@ -1,12 +1,15 @@
+from pathlib import Path
+
 import numpy as np
 import pickle
 
 
 # STEP 1: Load saved embeddings
-embeddings = np.load("../index/embeddings.npy")
+base_dir = Path(__file__).resolve().parent
+embeddings = np.load(base_dir / "embeddings.npy")
 
 # STEP 2: Load image file names
-with open("../index/filenames.pkl", "rb") as f:
+with open(base_dir / "filenames.pkl", "rb") as f:
     filenames = pickle.load(f)
 
 
