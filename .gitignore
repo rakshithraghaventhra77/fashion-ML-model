@@ -24,3 +24,5 @@ venv/
 .DS_Store
 Thumbs.db
 ml-service/app/embeddings.npy
+ml-service/index/faiss_index.index
+ml-service/index/embeddings.npy

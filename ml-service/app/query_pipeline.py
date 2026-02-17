@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pickle
 from embedding_generator import build_model, extract_embedding
@@ -5,9 +7,12 @@ from simple_search import find_similar
 
 
 # Load embeddings and filenames
-embeddings = np.load("../index/embeddings.npy")
+base_dir = Path(__file__).resolve().parent
+index_dir = base_dir.parent / "index"
 
-with open("../index/filenames.pkl", "rb") as f:
+embeddings = np.load(index_dir / "embeddings.npy")
+
+with open(index_dir / "filenames.pkl", "rb") as f:
     filenames = pickle.load(f)
 
 

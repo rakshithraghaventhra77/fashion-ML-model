@@ -6,10 +6,11 @@ import pickle
 
 # STEP 1: Load saved embeddings
 base_dir = Path(__file__).resolve().parent
-embeddings = np.load(base_dir / "embeddings.npy")
+index_dir = base_dir.parent / "index"
+embeddings = np.load(index_dir / "embeddings.npy")
 
 # STEP 2: Load image file names
-with open(base_dir / "filenames.pkl", "rb") as f:
+with open(index_dir / "filenames.pkl", "rb") as f:
     filenames = pickle.load(f)
 
 
@@ -22,7 +23,7 @@ def find_similar(query_vector, top_k=5):
     for i in range(len(embeddings)):
 
         # Euclidean distance
-        distance = np.linalg.norm(embeddings[i] - query_vector)
+        distance = np.linalg.norm(embeddings[i] - query_vector) #this is mathematically-->distance = sqrt(sum((a - b)^2))
 
         distances.append(distance)
 

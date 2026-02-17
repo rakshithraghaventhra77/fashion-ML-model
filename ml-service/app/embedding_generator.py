@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
@@ -8,7 +8,7 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.layers import GlobalMaxPooling2D
 from tensorflow.keras.models import Sequential
 from numpy.linalg import norm
-import pickle
+import pickle #saving and loading Python objs
 
 
 # -----------------------------
@@ -72,47 +72,47 @@ def extract_embedding(image_path, model):
 # -----------------------------
 # STEP 3: Loop through all images
 # -----------------------------
-def generate_embeddings(image_folder):
+def generate_embeddings(image_folder, output_dir=None):
 
     model = build_model()
 
     embeddings = []
     filenames = []
 
-    for file in tqdm(os.listdir(image_folder)):
+    image_folder = Path(image_folder).resolve()
+    output_dir = Path(output_dir) if output_dir else Path(__file__).resolve().parent.parent / "index"
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-        if file.lower().endswith((".jpg", ".jpeg", ".png")):
+    for file_path in tqdm(image_folder.iterdir()):
 
-            full_path = os.path.join(image_folder, file)
+        if file_path.suffix.lower() in (".jpg", ".jpeg", ".png"):
 
             try:
-                embedding = extract_embedding(full_path, model)
+                embedding = extract_embedding(str(file_path), model)
                 embeddings.append(embedding)
-                filenames.append(full_path)
+                filenames.append(str(file_path))
 
             except Exception as e:
-                print("Skipping file:", file)
+                print("Skipping file:", file_path.name, "Error:", e)
 
     embeddings = np.array(embeddings)
-
     print("Final embedding shape:", embeddings.shape)
 
     # Save embeddings
-    np.save("embeddings.npy", embeddings)
+    np.save(output_dir / "embeddings.npy", embeddings)
 
     # Save filenames
-    with open("filenames.pkl", "wb") as f:
+    with open(output_dir / "filenames.pkl", "wb") as f:
         pickle.dump(filenames, f)
 
     print("Done. Embeddings saved.")
-
 
 # -----------------------------
 # RUN SCRIPT
 # -----------------------------
 if __name__ == "__main__":
-    generate_embeddings("../../data/images")
-
+    base_dir = Path(__file__).resolve().parent
+    generate_embeddings(base_dir.parent.parent / "data" / "images")
 
 '''
 
