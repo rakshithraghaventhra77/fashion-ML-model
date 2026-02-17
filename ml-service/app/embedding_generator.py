@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
@@ -9,6 +10,7 @@ from tensorflow.keras.layers import GlobalMaxPooling2D
 from tensorflow.keras.models import Sequential
 from numpy.linalg import norm
 import pickle #saving and loading Python objs
+import pickle
 
 
 # -----------------------------
@@ -73,6 +75,7 @@ def extract_embedding(image_path, model):
 # STEP 3: Loop through all images
 # -----------------------------
 def generate_embeddings(image_folder, output_dir=None):
+def generate_embeddings(image_folder):
 
     model = build_model()
 
@@ -103,9 +106,33 @@ def generate_embeddings(image_folder, output_dir=None):
 
     # Save filenames
     with open(output_dir / "filenames.pkl", "wb") as f:
+    for file in tqdm(os.listdir(image_folder)):
+
+        if file.lower().endswith((".jpg", ".jpeg", ".png")):
+
+            full_path = os.path.join(image_folder, file)
+
+            try:
+                embedding = extract_embedding(full_path, model)
+                embeddings.append(embedding)
+                filenames.append(full_path)
+
+            except Exception as e:
+                print("Skipping file:", file)
+
+    embeddings = np.array(embeddings)
+
+    print("Final embedding shape:", embeddings.shape)
+
+    # Save embeddings
+    np.save("embeddings.npy", embeddings)
+
+    # Save filenames
+    with open("filenames.pkl", "wb") as f:
         pickle.dump(filenames, f)
 
     print("Done. Embeddings saved.")
+
 
 # -----------------------------
 # RUN SCRIPT
@@ -113,6 +140,8 @@ def generate_embeddings(image_folder, output_dir=None):
 if __name__ == "__main__":
     base_dir = Path(__file__).resolve().parent
     generate_embeddings(base_dir.parent.parent / "data" / "images")
+    generate_embeddings("../../data/images")
+
 
 '''
 
