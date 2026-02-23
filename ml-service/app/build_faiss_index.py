@@ -26,5 +26,5 @@ index = faiss.IndexFlatL2(dimension)
 index.add(embeddings)
 print("Total vectors:" , index.ntotal)
 #Save the index to disk
-faiss.write_index(index, "../index/faiss_index.index")
+faiss.write_index(index, str(index_dir / "faiss_index.index"))
 print("FAISS index built and saved successfully.")

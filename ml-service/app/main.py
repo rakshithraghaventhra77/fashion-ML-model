@@ -1,41 +1,53 @@
-from fastapi import FastAPI, UploadFile, File
-import numpy as np
-import pickle
-import faiss
-from embedding_generator import build_model, extract_embedding
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import io
+import logging
 
-app = FastAPI()
+from embedding_generator import extract_embedding
+from model_loader import get_model
+from search_engine import search
+from config import TOP_K
 
-# Load model ONCE
-model = build_model()
+app = FastAPI(title="Image Similarity Service")
 
-# Load embeddings and filenames
-embeddings = np.load("../index/embeddings.npy").astype("float32")
+# Allow frontend / Java calls
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-with open("../index/filenames.pkl", "rb") as f:
-    filenames = pickle.load(f)
+# Setup logging
+logging.basicConfig(level=logging.INFO)
 
-# Load FAISS index ONCE
-index = faiss.read_index("../index/faiss_index.index")
+# Load model at startup
+model = get_model()
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "Service is running"}
 
 
 @app.post("/recommend")
 async def recommend(file: UploadFile = File(...)):
 
-    contents = await file.read()
+    try:
+        contents = await file.read()
+        img = Image.open(io.BytesIO(contents)).convert("RGB")
 
-    img = Image.open(io.BytesIO(contents)).convert("RGB")
+        query_vector = extract_embedding(img, model)
 
-    # Extract embedding
-    query_vector = extract_embedding(img, model)
+        results = search(query_vector, TOP_K)
 
-    query_vector = np.array([query_vector]).astype("float32")
+        return {
+            "success": True,
+            "recommendations": results
+        }
 
-    # Search FAISS
-    distances, indices = index.search(query_vector, 5)
-
-    results = [filenames[i] for i in indices[0]]
-
-    return {"recommendations": results}
+    except Exception as e:
+        logging.error(f"Error processing image: {e}")
+        raise HTTPException(status_code=500, detail="Image processing failed")
