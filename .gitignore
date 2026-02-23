@@ -1,5 +1,6 @@
 # Ignore datasets
 /data/
+/datasets/
 
 # Common image datasets
 *.jpg
@@ -15,21 +16,62 @@
 *.pth
 *.onnx
 *.tflite
+*.pb
+*.ckpt
 
 # Python environments
 .venv/
 venv/
+env/
+ENV/
 
 # Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+
+# FAISS index and embeddings (large binary files)
+ml-service/index/
+*.index
+*.npy
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
 
 # OS files
 .DS_Store
 Thumbs.db
-ml-service/app/embeddings.npy
-ml-service/index/faiss_index.index
-ml-service/index/embeddings.npy
-# OS files
-.DS_Store
-Thumbs.db
+*.bak
+*.tmp
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Maven (additional to api-gateway/.gitignore)
+api-gateway/target/
+api-gateway/.mvn/wrapper/maven-wrapper.jar
+
+# Build artifacts
+build/
+dist/
+*.egg-info/

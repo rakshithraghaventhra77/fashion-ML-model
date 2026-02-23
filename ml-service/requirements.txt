@@ -2,4 +2,6 @@ tensorflow
 numpy
 pillow
 tqdm
-faiss-cpu
+faiss-cpufastapi
+uvicorn
+python-multipart
