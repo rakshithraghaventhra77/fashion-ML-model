@@ -1,4 +1,4 @@
-from config import FAISS_INDEX_PATH, FILENAMES_PATH
+from app.config import FAISS_INDEX_PATH, FILENAMES_PATH
 import faiss
 import pickle
 import numpy as np
