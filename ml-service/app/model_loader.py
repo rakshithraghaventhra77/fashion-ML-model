@@ -1,4 +1,4 @@
-from embedding_generator import build_model
+from app.embedding_generator import build_model
 
 model = build_model()
 

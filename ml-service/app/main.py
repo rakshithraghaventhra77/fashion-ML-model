@@ -3,18 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import io
 import logging
+import os
 
-from embedding_generator import extract_embedding
-from model_loader import get_model
-from search_engine import search
-from config import TOP_K
+from app.embedding_generator import extract_embedding
+from app.model_loader import get_model
+from app.search_engine import search
+from app.config import TOP_K
 
 app = FastAPI(title="Image Similarity Service")
 
-# Allow frontend / Java calls
+# Configure CORS with explicit origins (for production, use env var)
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:8080,http://127.0.0.1:8080").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,18 +25,27 @@ app.add_middleware(
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load model at startup
-model = get_model()
+try:
+    model = get_model()
+    logger.info("Model loaded successfully")
+except Exception as e:
+    logger.error(f"Failed to load model: {e}", exc_info=True)
+    model = None
 
 
 @app.get("/health")
 def health_check():
-    return {"status": "Service is running"}
+    return {"status": "Service is running", "model_loaded": model is not None}
 
 
 @app.post("/recommend")
 async def recommend(file: UploadFile = File(...)):
+
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model not loaded")
 
     try:
         contents = await file.read()
@@ -49,5 +61,5 @@ async def recommend(file: UploadFile = File(...)):
         }
 
     except Exception as e:
-        logging.error(f"Error processing image: {e}")
-        raise HTTPException(status_code=500, detail="Image processing failed")
+        logger.exception(f"Error processing image: {e}")
+        raise HTTPException(status_code=500, detail="Image processing failed") from e
