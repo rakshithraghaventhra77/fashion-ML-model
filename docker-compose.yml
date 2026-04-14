@@ -5,6 +5,8 @@ services:
     container_name: ml-service
     ports:
       - "8000:8000"
+    volumes:
+      - ./data:/data:ro
 
   api-gateway:
     build: ./api-gateway
@@ -13,3 +15,11 @@ services:
       - "8080:8080"
     depends_on:
       - ml-service
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Fashion recommendation UI with upload preview and recommendation results." />
+    <title>Fashion Recommendation Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
+
+    <main class="shell compact-shell">
+      <header class="hero compact-hero">
+        <div>
+          <p class="eyebrow">Fashion Recommendation Studio</p>
+          <h1>Upload an image and get similar fashion products.</h1>
+          <p class="hero-copy">Simple UI. Same dark theme. Same font style. Faster to read and easier to use.</p>
+        </div>
+        <span class="badge">Spring Boot + FastAPI + FAISS</span>
+      </header>
+
+      <section class="panel upload-panel">
+        <form id="uploadForm" class="upload-form">
+          <label class="dropzone" id="dropzone" for="fileInput">
+            <input id="fileInput" type="file" accept="image/*" />
+            <strong>Drop image here or click to browse</strong>
+            <span id="fileName">No file selected</span>
+          </label>
+
+          <div class="preview-frame">
+            <img id="previewImage" alt="Selected upload preview" />
+            <div class="preview-empty" id="previewEmpty">Preview appears here</div>
+          </div>
+
+          <div class="actions-row">
+            <button class="primary-btn" type="submit" id="submitBtn">Analyze image</button>
+            <button class="secondary-btn" type="button" id="clearBtn">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Step 2</p>
+            <h3>Recommendation results</h3>
+          </div>
+          <div class="result-summary" id="resultSummary">No analysis run yet</div>
+        </div>
+
+        <div class="loading-state" id="loadingState" hidden>
+          <span class="spinner"></span>
+          <p>Analyzing image and searching similar products...</p>
+        </div>
+
+        <div class="error-state" id="errorState" hidden></div>
+        <div class="results-grid" id="resultsGrid"></div>
+        <div class="empty-state" id="emptyState">
+          <h4>Nothing to show yet</h4>
+          <p>Upload an image to see the nearest fashion matches here.</p>
+        </div>
+      </section>
+    </main>
+
+    <template id="resultCardTemplate">
+      <article class="result-card">
+        <div class="result-image-wrap">
+          <img class="result-image" alt="Recommendation image" />
+        </div>
+        <div class="result-body">
+          <div class="result-title-row">
+            <h4 class="result-title"></h4>
+            <span class="result-id"></span>
+          </div>
+          <p class="result-meta"></p>
+          <p class="result-name"></p>
+          <div class="result-tags"></div>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
