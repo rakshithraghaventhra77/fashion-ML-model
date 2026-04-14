@@ -75,3 +75,7 @@ api-gateway/.mvn/wrapper/maven-wrapper.jar
 build/
 dist/
 *.egg-info/
+
+# Local documentation notes
+INTERVIEW_PREP_GUIDE.md
+PROJECT_GUIDE.md
